@@ -6,3 +6,5 @@ src/dBASE/dBASElibrary.map
 *.map
 *.dcu
 *.~dpr
+src/dBASE/pack/packed.zip
+src/dBASE/Backup of XProject.prj

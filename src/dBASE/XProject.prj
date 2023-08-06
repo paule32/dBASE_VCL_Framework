@@ -1,0 +1,26 @@
+Project File generated 2023-08-06 17:27:01
+
+[Project]
+Name=XProject
+DefaultDir=.
+MainProjectFileName=E:\Projekte\dBASE_VCL_Framework\src\dBASE\XProject.prg
+Parameters=
+Author=Jens Kallup - paule32
+Description=dBASE power Tools for OOP programming Project's
+Preprocessor=
+LogFileName=
+TargetFileName=E:\Projekte\dBASE_VCL_Framework\src\dBASE\XProject.exe
+IconFileName=
+SplashFileName=
+MostRecentSelectedFileName=
+WebApplication=false
+DeoOption=False
+
+[Contents]
+E:\Projekte\dBASE_VCL_Framework\src\dBASE\XProject.prg,0,0,0, 
+E:\Projekte\dBASE_VCL_Framework\src\dBASE\mainApplication.prg,0,0,,0, 
+E:\Projekte\dBASE_VCL_Framework\src\dBASE\XApplication.prg,0,0,,0, 
+E:\Projekte\dBASE_VCL_Framework\src\dBASE\XForms.prg,0,0,,0, 
+E:\Projekte\dBASE_VCL_Framework\src\dBASE\XObject.prg,0,0,,0, 
+
+[DEO]
