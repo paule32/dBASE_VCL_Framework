@@ -1,0 +1,8 @@
+
+*.PRo
+*.exe
+src/dBASE/dBASElibrary.map
+*.DLL
+*.map
+*.dcu
+*.~dpr

@@ -1,0 +1,180 @@
+// -----------------------------------------------------------------
+// @File    ExportsWindow.pas
+// @Author  Jens Kallup - paule32
+// @License MIT - Copyright (c) 2023 by kallup non-profit
+//          only for education !
+//
+// @brief   This file provide export X-Project routines for GUI
+//          Application's.
+// -----------------------------------------------------------------
+unit ExportsWindow;
+
+interface
+
+uses
+  Windows, Dialogs, SysUtils, Classes, Forms, Graphics;
+
+procedure Application_Initialize;
+
+function XProject_CreateWindow_AHandle_AName (AHandle: THandle; AName: String): THandle; export;
+function XProject_CreateWindow_AHandle       (AHandle: THandle): THandle; export;
+function XProject_ShowModal_AHandle          (AHandle: THandle): THandle; export;
+
+implementation
+
+// -----------------------------------------------------------------
+// private scoped variable's, and constant's ...
+// -----------------------------------------------------------------
+var
+  Application_isInitialized: Boolean = false;
+
+type
+  TXProject_WindowListRecord = class(TObject)
+    Name: String;
+    Form: TForm;
+    Handle: THandle;
+  end;
+
+type
+  TXProject_WindowList = class(TObject)
+  public
+    FList: Array of TXProject_WindowListRecord;
+    constructor Create(AHandle: THandle);
+    procedure Add(AHandle: THandle; AName: String);
+  end;
+
+var
+  XProject_WindowList: TXProject_WindowList;
+
+// -----------------------------------------------------------------
+// @brief ctor TXProject_WindowList - manage window list's ...
+// -----------------------------------------------------------------
+constructor TXProject_WindowList.Create(
+  AHandle: THandle);
+begin
+  inherited Create;
+  ShowMessage('handle: ' + inttostr(AHandle));
+
+  SetLength(FList,1);
+
+  FList[0] := TXProject_WindowListRecord.Create;
+  FList[0].Handle := AHandle;
+end;
+
+// -----------------------------------------------------------------
+// @brief Add new window to the window list ...
+// -----------------------------------------------------------------
+procedure TXProject_WindowList.Add(
+  AHandle: THandle;
+  AName  : String);
+begin
+  showmessage('1------------> ' + inttostr(FList[ Length(FList)-1 ].Handle));
+  if FList[ Length(FList)-1 ] = nil then
+     FList[ Length(FList)-1 ] := TXProject_WindowListRecord.Create;;
+
+  showmessage('2------------> ' + inttostr(FList[ Length(FList)-1 ].Handle));
+  FList[ Length(FList)-1 ].Name := AName;
+  FList[ Length(FList)-1 ].Form := TForm.CreateParented(
+  FList[ Length(FList)-1 ].Handle);
+  FList[ Length(FList)-1 ].Form.Caption := 'fimmel';
+
+//  SetLength( FList,Length(FList)+1 );
+end;
+
+// -----------------------------------------------------------------
+// @brief This function initialize the application framework, and
+//        open a main stream window.
+// -----------------------------------------------------------------
+procedure Application_Initialize;
+var
+  DeskWindow: THandle;
+begin
+  Application.Initialize;
+  Application_isInitialized := true;
+
+  DeskWindow := GetParent(Application.Handle);
+  XProject_WindowList := TXProject_WindowList.Create(DeskWindow);
+end;
+
+// -----------------------------------------------------------------
+// @brief This function create a new window. The parent window is in
+//        *AHANDLE*. On success, it returns the Handle to the new
+//        created windows, else if fail, it returns 0.
+// -----------------------------------------------------------------
+function XProject_CreateWindow_AHandle_AName(
+  AHandle: THandle;
+  AName  : String): THandle; export
+var
+  form: TForm;
+begin
+  result := 0;
+  try
+    if not(Application_isInitialized) then
+    begin
+      Application_Initialize;
+      form := XProject_WindowList.FList[
+      Length( XProject_WindowList.FList)-1 ].Form;
+    end else
+    begin
+      SetLength(
+      XProject_WindowList.FList, Length(
+      XProject_WindowList.FList)+1);
+
+      if
+      XProject_WindowList.FList[ Length(
+      XProject_WindowList.FList)-1 ] = nil then
+
+      XProject_WindowList.FList[ Length(
+      XProject_WindowList.FList)-1 ] := TXProject_WindowListRecord.Create;
+
+      XProject_WindowList.FList[ Length(
+      XProject_WindowList.FList)-1 ].Handle := AHandle;
+
+      XProject_WindowList.Add(
+      XProject_WindowList.FList[ Length(
+      XProject_WindowList.FList)-1 ].Handle, AName);
+
+      form := XProject_WindowList.FList[
+      Length( XProject_WindowList.FList)-1 ].Form;
+    end;
+
+    form.Left    := 20;
+    form.Top     := 20;
+    form.Width   := 200;
+    form.Height  := 400;
+    form.Color   := clYellow;
+
+    result := Length( XProject_WindowList.FList)-1;
+  except
+    on E: Exception do
+    begin
+      ShowMessage('Exception occur:' +
+      #13#10 + E.Message);
+      result := 0;
+    end;
+  end;
+end;
+
+function XProject_CreateWindow_AHandle(
+  AHandle: THandle): THandle; export
+begin
+  result :=
+  XProject_CreateWindow_AHandle_AName(
+  XProject_WindowList.FList[ Length(
+  XProject_WindowList.FList)-1 ].Handle,'Form' + IntToStr(1));
+end;
+
+function XProject_ShowModal_AHandle(
+  AHandle: THandle): THandle; export
+begin
+  ShowMessage('moooddd');
+  if not(Application_isInitialized) then
+  raise Exception.Create('Framework not initialized.');
+
+  ShowMessage('ooo');
+  XProject_WindowList.FList[ 1 ].Form.ShowModal;
+  result := 0;
+end;
+
+end.
+
